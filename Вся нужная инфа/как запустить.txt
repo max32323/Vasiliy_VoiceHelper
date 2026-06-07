@@ -1,0 +1,11 @@
+1) по ссылке скачать модель для разговора на русском языке(рекомендуем yuriy):
+https://rhvoice.su/voices/
+
+2) скачать python версии 3.10:
+https://www.python.org/downloads/release/python-3100/
+
+3) Открыть папку
+
+4) Открыть output
+
+5) Открыть файл main_helper и запустить его
