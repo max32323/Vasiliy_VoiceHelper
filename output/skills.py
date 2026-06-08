@@ -3,7 +3,7 @@ import sqlite3
 import string
 import webbrowser, sys, subprocess, voice, random, pyperclip
 import nltk
-import g4f
+import openai
 import pygame
 import win32api
 import win32gui
@@ -432,7 +432,6 @@ def stop_GPT():
 
 
 def GPT_answer(text: str):
-    # global b
     print(text)
     cursor_path.execute("""SELECT * FROM your_path""")
     path = cursor_path.fetchall()
@@ -440,52 +439,25 @@ def GPT_answer(text: str):
         name = file.read()
         if name == '':
             name = 'Неизвестная личность'
-    while True:
-        # response = g4f.ChatCompletion.create(
-        #     model="gpt-3.5-turbo",
-        #     temperature=0.9,
-        #     max_tokens=1000,
-        #     top_p=1.0,
-        #     frequency_penalty=0.0,
-        #     presence_penalty=0.6,
-        #     stop=["You:"],
-        #     messages=[{"role": "system", "content": (
-        #         f"Твоего пользователя зовут {name}. Ты добрый человек который готов помочь пользователю ответить на любой вопрос")},
-        #               {"role": "user", "content": text}]
-        # )
-        response = g4f.ChatCompletion.create(
-            model="gpt-4",
-            messages=[{"role": "system", "content": (
-                f"Ты - Василий, а твоего пользователя зовут {name}, будь к этой детале внимателен! Ты добрый человек который готов помочь пользователю ответить на любой вопрос. Обязательно говори свой ответ на русском языке и без ссылок на ресурсы")},
-                      {"role": "user", "content": f'Ты - Василий, а твоего пользователя зовут {name}! Запрос: {text}'}]
+
+    try:
+        with open('API_KEY.txt', 'r', encoding='utf-8') as file:
+            api = file.read().strip()
+        openai.api_key = api
+        chat_completion = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system",
+                 "content": f"Твоего пользователя зовут {name}. Ты добрый человек который готов помочь пользователю ответить на любой вопрос. Страрайся давать кратикий ответ на русском языке"},
+                {"role": "user",
+                 "content": f"Ты - Василий, а твоего пользователя зовут {name}. Запрос: {text}'"}
+            ]
         )
-        print(response)
-        if str(response) == '' or str(response) == '流量异常,请尝试更换网络环境' or str(response) == 'Model not found or too long input. Or any other error (xD)' or str(response) == 'No message received' or 'Request' in str(response):
-            pass
-        elif str(response) == 'sorry, 您的ip已由于触发防滥用检测而被封禁,本服务网址是https://chat18.aichatos8.com 或者 https://cat.chatavx.com/ 如果你不在本网站，请前往本网站使用即可 如需合作接口调用请联系微信kelemm220 或者前往 https://binjie09.shop 自助购买key, 认为是误封需要解封的请前往https://www.ip.cn/ 查询ip信息,并发送信息至邮件 gpt33@binjie.site ，站长会定期看邮件并处理解封和合作问题，如需调用接口请见接口文档https://apifox.com/apidoc/shared-803d9df6-a071-4b3e-9d69-ea1281614d82，如需合作接口调用请联系微信chatkf123 或者前往 https://cat.chatavx.com/  注册使用（可付费使用gpt4 注册可免费使用3.5）' or "sorry" in response:
-            pass
-        else:
-            voice.speaker(response)
-            break
-            # r = russian()
-            # t = ''
-            # for i in response:
-            #     if i == '#' or i == '*':
-            #         pass
-            #     else:
-            #         t += i
-            # print(response)
-            # for i in t[:-1]:
-            #     if i in r:
-            #         b = True
-            #     else:
-            #         print(i)
-            #         b = False
-            #         break
-            # if b:
-            #     voice.speaker(response)
-            #     file.close()
-            #     break
+        reply = chat_completion.choices.message.content
+        voice.speaker(reply)
+    except:
+        voice.speaker('Ошибка! Проверьте ваш api ключ и соеденение с интернетом!')
+
 
 def start_GPT_menu():
     voice.speaker('включаю для вас меню с искусственным интеллектом. Пожалуйста подождите')
@@ -782,21 +754,23 @@ def GPT_talk(text: str):
         name = file.read()
         if name == '':
             name = 'Неизвестная личность'
-    while True:
-        response = g4f.ChatCompletion.create(
-            model="gpt-4",
-            messages=[{"role": "system", "content": (
-                f"Твоего пользователя зовут {name}, а тебя Василий(Всегда василий, не название модели!). Ты создан только для общения с {name}. Старайся давать ему краткие ответы, иногда можно длинные. Твоя главная цель - это общение с {name}")},
-                      {"role": "user", "content": f'Ты - Василий, а твоего пользователя зовут {name}! Запрос: {text}'}]
+    try:
+        with open('API_KEY.txt', 'r', encoding='utf-8') as file:
+            api = file.read().strip()
+        openai.api_key = api
+        chat_completion = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system",
+                 "content": f"Твоего пользователя зовут {name}, а тебя Василий(Всегда василий, не название модели!). Ты создан только для общения с {name}. Старайся давать ему краткие ответы, иногда можно длинные. Твоя главная цель - это общение с {name}"},
+                {"role": "user",
+                 "content": f"Ты - Василий, а твоего пользователя зовут {name}. Запрос: {text}'"}
+            ]
         )
-        print(response)
-        if str(response) == '' or str(response) == '流量异常,请尝试更换网络环境' or str(response) == 'No message received' or str(response) == 'Request ended with status code 404' or str(response) == 'Model not found or too long input. Or any other error (xD)':
-            pass
-        elif str(response) == 'sorry, 您的ip已由于触发防滥用检测而被封禁,请勿滥用本站,本服务网址是https://chat18.aichatos8.com 或者 https://cat.chatavx.com/ 如果你不在本网站，请前往本网站使用即可 如需合作接口调用请联系微信kelemm220 或者前往 https://binjie09.shop 自助购买key, 认为是误封需要解封的请前往https://www.ip.cn/ 查询ip信息,并发送信息至邮件 gpt33@binjie.site ，站长会定期看邮件并处理解封和合作问题，如需调用接口请见接口文档https://apifox.com/apidoc/shared-803d9df6-a071-4b3e-9d69-ea1281614d82 如需合作接口调用请联系微信chatkf123 或者前往 https://cat.chatavx.com/  注册使用（可付费使用gpt4 注册可免费使用3.5）'  or 'sorry, 您的ip已由于触发防滥用检测而被封禁,请勿滥用本站,本服务网址是https://chat18.aichatos8.com 或者 https://cat.chatavx.com/ 如果你不在本网站，请前往本网站使用即可 如需合作接口调用请联系微信kelemm220 或者前往 https://binjie09.shop 自助购买key, 认为是误封需要解封的请前往https://www.ip.cn/ 查询ip信息,并发送信息至邮件 gpt33@binjie.site ，站长会定期看邮件并处理解封和合作问题，如需调用接口请见接口文档https://apifox.com/apidoc/shared-803d9df6-a071-4b3e-9d69-ea1281614d82 如需合作接口调用请联系微信chatkf123 或者前往 https://cat.chatavx.com/  注册使用（可付费使用gpt4 注册可免费使用3.5）' in response or "sorry" in response:
-            pass
-        else:
-            voice.speaker(response)
-            break
+        reply = chat_completion.choices.message.content
+        voice.speaker(reply)
+    except:
+        voice.speaker('Ошибка! Проверьте ваш api ключ и соеденение с интернетом!')
 def GPT_talk_stop():
     voice.speaker('Хорошо, отлично поговорили!')
     return False

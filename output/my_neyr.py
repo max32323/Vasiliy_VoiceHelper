@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QTextEdit, QLabe
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 import pyperclip, voice
-from g4f import ChatCompletion
+import openai
 import pygame
 
 connect_color = sqlite3.connect('color_main_menu.db')
@@ -134,7 +134,6 @@ class Window(QWidget):
         pyperclip.copy(self.answer_II.toPlainText())
 
     def II(self):
-        num_error = 0
         self.button_give_text.setEnabled(False)
         if self.user_text.toPlainText().strip() != '':
             play_sound('went.mp3')
@@ -144,30 +143,27 @@ class Window(QWidget):
                 if name == '':
                     name = 'Неизвестная личность'
 
-            while True:
-                response: str = ChatCompletion.create(
-                    model="gpt-4",
-                    messages=[{"role": "system", "content": (
-                        f"Твоего пользователя зовут {name}. Ты добрый человек который готов помочь пользователю ответить на любой вопрос. Страрайся давать ответ на русском языке")},
-                              {"role": "user", "content": f'Ты - Василий, а твоего пользователя зовут {name}. Запрос: {self.user_text.toPlainText()}'}],
+            try:
+                with open('API_KEY.txt', 'r', encoding='utf-8') as file:
+                    api = file.read().strip()
+                openai.api_key = api
+                chat_completion = openai.ChatCompletion.create(
+                    model="gpt-3.5-turbo",
+                    messages=[
+                        {"role": "system",
+                         "content": f"Твоего пользователя зовут {name}. Ты добрый человек который готов помочь пользователю ответить на любой вопрос. Страрайся давать ответ на русском языке"},
+                        {"role": "user",
+                         "content": f"Ты - Василий, а твоего пользователя зовут {name}. Запрос: {self.user_text.toPlainText()}'"}
+                    ]
                 )
-                print(response)
-                if response == '流量异常,请尝试更换网络环境' or response == 'Model not found or too long input. Or any other error (xD)' or response == 'Too many messages in a row' or response == 'Request ended with status code 404' or response == 'No message received':
-                    pass
-                elif response == 'sorry, 您的ip已由于触发防滥用检测而被封禁,本服务网址是https://chat18.aichatos8.com 或者 https://cat.chatavx.com/ 如果你不在本网站，请前往本网站使用即可 如需合作接口调用请联系微信kelemm220 或者前往 https://binjie09.shop 自助购买key, 认为是误封需要解封的请前往https://www.ip.cn/ 查询ip信息,并发送信息至邮件 gpt33@binjie.site ，站长会定期看邮件并处理解封和合作问题，如需调用接口请见接口文档https://apifox.com/apidoc/shared-803d9df6-a071-4b3e-9d69-ea1281614d82，如需合作接口调用请联系微信chatkf123 或者前往 https://cat.chatavx.com/  注册使用（可付费使用gpt4 注册可免费使用3.5）' or "sorry" in response:
-                    pass
-                elif 'простите' in response.lower() or 'извините' in response.lower():
-                    num_error += 1
-                    if num_error >= 6:
-                        play_sound('make_answer.mp3')
-                        self.answer_II.setText(response)
-                        break
-                else:
-                    play_sound('make_answer.mp3')
-                    self.answer_II.setText(response)
-                    break
-            self.button_give_text.setEnabled(True)
-            num_error = 0
+                reply = chat_completion.choices.message.content
+                play_sound('make_answer.mp3')
+                self.answer_II.setText(reply)
+                self.button_give_text.setEnabled(True)
+            except:
+                play_sound('make_answer.mp3')
+                self.answer_II.setText('Ошибка! Проверьте ваш api ключ и соеденение с интернетом!')
+                self.button_give_text.setEnabled(True)
 
         else:
             msg = QMessageBox()
