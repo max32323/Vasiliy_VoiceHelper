@@ -196,7 +196,7 @@ class Password_Window(QWidget):
         cursor_color.execute("""SELECT * FROM color_menu""")
         all = cursor_color.fetchall()
         print(all)
-        if str(all) == '[]':
+        if not all:
             self.setStyleSheet("""
             QWidget {
                 background-color: #00BFFF;

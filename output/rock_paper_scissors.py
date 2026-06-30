@@ -75,7 +75,7 @@ class Window(QWidget):
         cursor_point.execute("""SELECT * FROM rock_paper_scissors""")
         all = cursor_point.fetchall()
         print(all)
-        if str(all) == '[]':
+        if not all:
             all = 0
         else:
             all = all[0][0]
@@ -160,7 +160,7 @@ class Window(QWidget):
             cursor_point.execute("""SELECT * FROM rock_paper_scissors""")
             all = cursor_point.fetchall()
             print(all)
-            if str(all) == '[]':
+            if not all:
                 cursor_point.execute("""INSERT INTO rock_paper_scissors VALUES (?, ?)""", (1, 0))
                 connect_point.commit()
                 p = 1
@@ -189,7 +189,7 @@ class Window(QWidget):
         cursor_color.execute("""SELECT * FROM color_menu""")
         all = cursor_color.fetchall()
         print(all)
-        if str(all) == '[]':
+        if not all:
             self.setStyleSheet("""
             QWidget {
                 background-color: #00BFFF;

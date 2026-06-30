@@ -720,7 +720,7 @@ def info_user():
     cursor = conn.cursor()
     cursor.execute("""SELECT * FROM user""")
     all = cursor.fetchall()
-    if str(all) == '[]' or name.strip() == '':
+    if not all or name.strip() == '':
         voice.speaker('Вы не вносили о себе информацию! Чтобы я смог что-то вам рассказать внесите о себе информацию в главном меню')
     else:
         age = all[0][0]
@@ -831,7 +831,7 @@ def weather_in_your_city():
     cursor = conn.cursor()
     cursor.execute("""SELECT * FROM user""")
     all = cursor.fetchall()
-    if str(all) == '[]':
+    if not all:
         city = 'неизвестный город'
     else:
         city = all[0][4]

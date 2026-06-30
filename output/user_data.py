@@ -170,7 +170,7 @@ class Window_Info(QWidget):
         cursor.execute("""SELECT * FROM user""")
         all = cursor.fetchall()
         print(all)
-        if str(all) == '[]':
+        if not all:
             voice.speaker('Данных изначально нет!')
         else:
             cursor.execute("""DELETE FROM user""")
@@ -189,7 +189,7 @@ class Window_Info(QWidget):
         cursor_color.execute("""SELECT * FROM color_menu""")
         all = cursor_color.fetchall()
         print(all)
-        if str(all) == '[]':
+        if not all:
             self.setStyleSheet("""
             QWidget {
                 background-color: #00BFFF;

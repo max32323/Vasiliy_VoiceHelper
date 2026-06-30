@@ -47,7 +47,6 @@ cursor_path.execute("""
     path_tg TEXT
     )
 """)
-connect_path = sqlite3.connect('user_path.db')
 cursor_path = connect_path.cursor()
 cursor_path.execute("""SELECT * FROM your_path""")
 path = cursor_path.fetchall()
@@ -174,7 +173,7 @@ class My_helper_window(QWidget):
             voice.speaker('Добавил путь!')
             cursor_path.execute("""SELECT * FROM your_path""")
             all = cursor_path.fetchall()
-            if str(all) == '[]':
+            if not all:
                 cursor_path.execute("""INSERT INTO your_path VALUES (?,?)""", (self.line_path.text().strip(), self.line_path_tg.text().strip(),))
             else:
                 cursor_path.execute('DELETE FROM your_path')
@@ -189,7 +188,7 @@ class My_helper_window(QWidget):
         cursor_color.execute("""SELECT * FROM color_menu""")
         all = cursor_color.fetchall()
         print(all)
-        if str(all) == '[]':
+        if not all:
             self.setStyleSheet("""
             QWidget {
                 background-color: #00BFFF;
@@ -464,7 +463,7 @@ class My_helper_window(QWidget):
     def start(self):
         cursor_path.execute("""SELECT * FROM your_path""")
         all = cursor_path.fetchall()
-        if str(all) == '[]':
+        if not all:
             msg = QMessageBox()
             msg.setWindowIcon(QIcon('image/yy.png'))
             msg.setIcon(QMessageBox.Warning)
@@ -475,18 +474,6 @@ class My_helper_window(QWidget):
 
         else:
             if self.line_name.text().strip() != '':
-                # cursor_path.execute("""SELECT * FROM your_path""")
-                # all = cursor_path.fetchall()
-                # if str(all) == '[]':
-                #     msg = QMessageBox()
-                #     msg.setWindowIcon(QIcon('image/yy.png'))
-                #     msg.setIcon(QMessageBox.Warning)
-                #     msg.setWindowTitle('Предупреждение!')
-                #     msg.setText('Пожалуйста, введите путь и тг!')
-                #     msg.show()
-                #     msg.exec_()
-                # else:
-                # skills.name_write(str(self.line_name.text().strip()))
                 cursor_path.execute("""SELECT * FROM your_path""")
                 all = cursor_path.fetchall()
                 with open(f'{all[0][0]}\my_name', 'w', encoding='utf-8') as file:

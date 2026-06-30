@@ -29,7 +29,7 @@ def check():
     global cursor_mus
     cursor_mus.execute("SELECT * FROM list")
     all = cursor_mus.fetchall()
-    if str(all) != '[]':
+    if all:
         return all[0][0]
     else:
         return ''
@@ -142,7 +142,7 @@ class Window(QWidget):
             all_2 = cursor_mus.fetchall()
             n = 1
             print('ок')
-            if str(all_2) != '[]':
+            if all_2:
                 for i in all:
                     if i[0] == all_2[n-1][0]:
                         cursor_mus.execute("UPDATE list SET id=? WHERE name=?", (n, i[0],))
@@ -154,7 +154,7 @@ class Window(QWidget):
         global cursor_mus, conn_mus
         cursor_mus.execute("SELECT * FROM list")
         all = cursor_mus.fetchall()
-        if str(all) == '[]':
+        if not all:
             w = QMessageBox()
             w.setWindowIcon(QIcon(f'{path_image[0][0]}\image\music.jpg'))
             w.setWindowTitle('Внимание!')
@@ -186,7 +186,7 @@ class Window(QWidget):
         global cursor_mus
         cursor_mus.execute("SELECT * FROM list")
         all = cursor_mus.fetchall()
-        if str(all) != '[]':
+        if all:
             full = len(all)
             if self.number_mus+1 == full:
                 self.number_mus = 0
@@ -200,7 +200,7 @@ class Window(QWidget):
         global cursor_mus
         cursor_mus.execute("SELECT * FROM list")
         all = cursor_mus.fetchall()
-        if str(all) != '[]':
+        if all:
             text = "\n".join(rec[0] for rec in all).split('\n')
             print(text)
             text[self.number_mus] = "✅ "+text[self.number_mus]
@@ -215,7 +215,7 @@ class Window(QWidget):
         cursor_color.execute("""SELECT * FROM color_menu""")
         all = cursor_color.fetchall()
         print(all)
-        if str(all) == '[]':
+        if not all:
             self.setStyleSheet("""
             QWidget {
                 background-color: #00BFFF;
