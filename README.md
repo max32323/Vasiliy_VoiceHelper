@@ -16,7 +16,7 @@
 3) Через любой удобный вам редактор кода(можно через cmd) создайте 
 виртуальное окружения для проекта: 
 
-    `git clone https://github.com/max32323/VoiceHelper_Vasiliy.git`
+    `git clone https://github.com/max32323/Vasiliy_VoiceHelper.git`
 
     `python -m venv venv`
 
